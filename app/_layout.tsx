@@ -1,24 +1,39 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { DarkTheme, ThemeProvider } from "@react-navigation/native";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
+import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+const APP_BG = "#0F0F10";
 
-export const unstable_settings = {
-  anchor: '(tabs)',
+SystemUI.setBackgroundColorAsync(APP_BG);
+
+const navTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: APP_BG,
+    card: APP_BG,
+  },
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <View style={{ flex: 1, backgroundColor: APP_BG }}>
+      <SafeAreaProvider>
+        <ThemeProvider value={navTheme}>
+          <StatusBar style="light" />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: APP_BG },
+              navigationBarColor: APP_BG,
+              animation: "slide_from_right",
+            }}
+          />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </View>
   );
 }
